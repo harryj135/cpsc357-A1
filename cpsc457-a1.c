@@ -24,7 +24,10 @@ int main(int argc, char* argv[]) {
     if (argc < 2) exit(0);
 
     for (int i = 1; i < argc; i++) {
-        pipe(pipes[i]);
+        if (pipe(pipes[i]) == -1) {
+            exit(-1);
+        }
+        
         fr = fork();
         if (fr < 0) {
             printf("error!\n");
@@ -41,11 +44,15 @@ int main(int argc, char* argv[]) {
             write(pipes[i][1], &buf, strlen(buf));
 
             // close pipe and exit child process
-            close(pipes[i][1]);
+            if (close(pipes[i][1]) == -1) {
+                exit(-1);
+            }
             exit(0);
         } else {
             // not using the write file descriptor
-            close(pipes[i][1]);
+            if (close(pipes[i][1]) == -1) {
+                exit(-1);
+            }
         }
     }
 
@@ -60,7 +67,9 @@ int main(int argc, char* argv[]) {
         }
         
         // close pipe when done
-        close(pipes[i][0]);
+        if (close(pipes[i][0]) == -1) {
+            exit(-1);
+        }
     }
 
 

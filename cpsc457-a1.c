@@ -1,45 +1,35 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-int main() {
+int fibonacci(int n) {
+    if (n == 0)
+        return 0;
+    if (n == 1)
+        return 1;
+        
+    return fibonacci(n-1) + fibonacci(n-2);
+}
+
+int main(int argc, char* argv[]) {
     pid_t fr;
+    int fibonacci_n;
+    int fib_result;
 
-    // base case 0
-    int fib_n = 0;
-    int fib_total = 0;
+    if (argc < 2) exit(0);
 
-    int fib_total_n_minus_1 = 0;
-    int fib_total_n_minus_2 = 0;
-    int swap = 0;
-
-    int fib_target = 1;
-    // replace with cli argument later
-
-    printf("error!\n");
-
-    pid_t = fork();
-
-    if (fr < 0) {
-        printf("error!\n");
-        exit();
-    } else if (fr == 0) {
-        // base case: fib is 1
-        if (fib_n < fib_target) {
-            if (fib_n == 1) {
-                fib_total = 1;
-                fib_n = 1;
-            } else {
-                int swap = fib_total_n_minus_1 + fib_total_n_minus_2;
-                fib_total_n_minus_2 = fib_total_n_minus_1;
-                fib_total_n_minus_1 = fib_total;
-                fib_total = swap; 
-                printf("%d\n", fib_total);
-            }
-
-            fib_n++;
-            fork();
+    for (int i = 1; i < argc; i++) {
+        fr = fork();
+        if (fr < 0) {
+            printf("error!\n");
+            exit(-1);
+        } else if (fr == 0) {  
+            fibonacci_n = atoi(argv[i]);
+            printf("Child Process (PID %d) F_{%d} = %d\n", getpid(), fibonacci_n, fibonacci(fibonacci_n));
+            exit(0);
         }
-    } else {
-        wait();
-        exit();
     }
+    
+    wait();
+    exit(0);
 }

@@ -26,9 +26,12 @@ int main(int argc, char* argv[]) {
 
     if (argc < 2) exit(0);
 
+    if (argc > 9) argc = 9;
 
+    int pipeidx;
     for (i = 1; i < argc; i++) {
-        if (pipe(pipes[i]) == -1) {
+        pipeidx = i - 1;
+        if (pipe(pipes[pipeidx]) == -1) {
             exit(-1);
         }
         
@@ -37,19 +40,19 @@ int main(int argc, char* argv[]) {
             printf("error!\n");
             exit(-1);
         } else if (fr == 0) {  
-            close(pipes[i][0]);
+            close(pipes[pipeidx][0]);
 
             fibonacci_n = atoi(argv[i]);
 
             sprintf(buf, "Child Process (PID %d) F_{%d} = %d\n", getpid(), fibonacci_n, fibonacci(fibonacci_n));
-            write(pipes[i][1], buf, strlen(buf));
+            write(pipes[pipeidx][1], buf, strlen(buf));
 
-            if (close(pipes[i][1]) == -1) {
+            if (close(pipes[pipeidx][1]) == -1) {
                 exit(-1);
             }
             exit(0);
         } else {
-            if (close(pipes[i][1]) == -1) {
+            if (close(pipes[pipeidx][1]) == -1) {
                 exit(-1);
             }
         }
@@ -58,7 +61,7 @@ int main(int argc, char* argv[]) {
     while (wait(NULL) > 0);
 
     
-    for (i = 1; i < argc; i++) {
+    for (i = 0; i < (argc - 1); i++) {
         while(read(pipes[i][0], &buf, 1) > 0) {
             fputs(buf, stdout);
         }

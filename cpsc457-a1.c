@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
     pid_t fr;
     int fibonacci_n;
     int fib_result;
+    int pipeidx;
 
     int    pipes[8][2];
     char   buf[128];
@@ -28,7 +29,6 @@ int main(int argc, char* argv[]) {
 
     if (argc > 9) argc = 9;
 
-    int pipeidx;
     for (i = 1; i < argc; i++) {
         pipeidx = i - 1;
         if (pipe(pipes[pipeidx]) == -1) {
